@@ -22,7 +22,12 @@ export class TableComponent {
             this.fileReaderService.readFile(inputElement.files[0])
                 .then(fileContent => {
                     this.headers = fileContent.header;
-                    this.body = fileContent.body;
+                    this.body = fileContent.body.map(value => value.map(value1 => {
+                        if (value1 === '-') {
+                            return '0';
+                        }
+                        return value1;
+                    }));
                 });
         }
     }
