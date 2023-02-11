@@ -1,0 +1,16 @@
+<input type="file" (change)="onFileChanged($event)" />
+<p-table [value]="body" [globalFilterFields]="headers">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="{{i}}" *ngFor="let header of headers; let i = index">{{ header }}
+                <p-sortIcon field="{{i}}"></p-sortIcon>
+                <p-columnFilter type="numeric" field="{{i}}" display="menu"></p-columnFilter>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData>
+        <tr>
+            <td *ngFor="let header of headers; let i = index">{{ rowData[i] }}</td>
+        </tr>
+    </ng-template>
+</p-table>
