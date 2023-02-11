@@ -8,7 +8,7 @@ export class FileReaderService {
     HTML_FILE_EXTENSION = 'html';
     RTF_FILE_EXTENSION = 'rtf';
 
-    RTF_SEPARATION_LINE_REGEX = /^\| +-+\| $/;
+    RTF_SEPARATION_LINE_REGEX = /^\| +-+\|\s*$/;
 
     readFile(file: File): Promise<{ header: string[], body: string[][] }> {
         const fileExtension = file.name.split('.').pop();
@@ -32,10 +32,12 @@ export class FileReaderService {
 
         return await new Promise((resolve, reject) => {
             fileReader.onload = () => {
-                const lines = fileReader.result?.toString().split('\n') || [];
+                const trimmedResult = fileReader.result?.toString().trim() || '';
+                const lines = trimmedResult.split('\n') || [];
 
                 const headerData = lines[0];
-                const headers = headerData.split('|').map(header => header.trim()).filter(value => value !== '');
+                const headers = headerData.split('|')
+                    .map(header => header.trim());
 
                 const bodyData = lines.slice(1)
                     .filter(value => !this.RTF_SEPARATION_LINE_REGEX.test(value))
@@ -44,12 +46,12 @@ export class FileReaderService {
                 const body = bodyData
                     .map(line => line.split('|')
                         .map(value => value.trim())
-                        .filter(value => value !== '')
                     );
 
                 const fileData: { header: string[]; body: string[][] } = {header: [], body: [[]]};
                 fileData.header = headers;
                 fileData.body = body;
+                console.log(fileData)
                 resolve(fileData);
             };
             fileReader.onerror = reject;
