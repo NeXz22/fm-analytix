@@ -1,13 +1,13 @@
 <input type="file" (change)="onFileChanged($event)"/>
-<p-table [value]="body" [globalFilterFields]="headers" [scrollable]="true" [virtualScroll]="true"
+<p-table [value]="body" [globalFilterFields]="filterFields" [scrollable]="true" [virtualScroll]="true"
          [virtualScrollItemSize]="46" scrollHeight="800px" [resizableColumns]="true" columnResizeMode="expand"
          [tableStyle]="{'min-width': '100%'}" styleClass="p-datatable-sm">
     <ng-template pTemplate="header">
         <tr>
             <th pResizableColumn pSortableColumn="{{i}}"
-                *ngFor="let header of headers; let i = index">{{ header }}
+                *ngFor="let header of headers; let i = index">{{ header.label }} ({{(header.type)}})
                 <p-sortIcon field="{{i}}"></p-sortIcon>
-                <p-columnFilter type="numeric" field="{{i}}" display="menu"></p-columnFilter>
+                <p-columnFilter type="{{header.type || 'text'}}" field="{{i}}" display="menu"></p-columnFilter>
             </th>
         </tr>
     </ng-template>
