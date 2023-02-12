@@ -5,13 +5,15 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ButtonModule} from 'primeng/button';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { TableComponent } from './table/table.component';
+import {TableComponent} from './table/table.component';
 import {TableModule} from 'primeng/table';
+import {TransformDataTypePipe} from './table/transform-data-type.pipe';
 
 @NgModule({
     declarations: [
         AppComponent,
-        TableComponent
+        TableComponent,
+        TransformDataTypePipe
     ],
     imports: [
         BrowserModule,
