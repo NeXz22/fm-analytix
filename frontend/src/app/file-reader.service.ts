@@ -1,4 +1,6 @@
 import {Injectable} from '@angular/core';
+import * as cheerio from 'cheerio';
+
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +16,7 @@ export class FileReaderService {
         const fileExtension = file.name.split('.').pop();
 
         if (fileExtension === this.HTML_FILE_EXTENSION) {
-            return this.readHtmlFile();
+            return this.readHtmlFile(file);
         } else if (fileExtension === this.RTF_FILE_EXTENSION) {
             return this.readRtfFile(file);
         } else {
@@ -23,8 +25,32 @@ export class FileReaderService {
         }
     }
 
-    private async readHtmlFile(): Promise<{ header: string[], body: string[][] }> {
-        return Promise.resolve({header: [], body: [[]]});
+    private async readHtmlFile(file: File): Promise<{ header: string[], body: string[][] }> {
+        const fileReader = new FileReader();
+
+        return await new Promise((resolve, reject) => {
+            fileReader.onload = () => {
+                const $ = cheerio.load(fileReader.result!.toString());
+                const $headerRow = $('table tr:first-child');
+                const headerData = $headerRow.find('th').map((_, th) => $(th)
+                    .text()
+                    .trim())
+                    .get();
+
+                const bodyData = $('table tr:not(:first-child)').map((_, tr) => [
+                    $(tr)
+                        .find('td')
+                        .map((i, el) => $(el).text()).toArray()]
+                ).toArray();
+
+                const fileData: { header: string[]; body: string[][] } = {header: [], body: [[]]};
+                fileData.header = headerData;
+                fileData.body = bodyData;
+                resolve(fileData);
+            };
+            fileReader.onerror = reject;
+            fileReader.readAsText(file);
+        });
     }
 
     private async readRtfFile(file: File): Promise<{ header: string[]; body: string[][] }> {
@@ -51,7 +77,6 @@ export class FileReaderService {
                 const fileData: { header: string[]; body: string[][] } = {header: [], body: [[]]};
                 fileData.header = headers;
                 fileData.body = body;
-                console.log(fileData)
                 resolve(fileData);
             };
             fileReader.onerror = reject;
