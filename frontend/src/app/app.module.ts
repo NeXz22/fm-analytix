@@ -11,12 +11,18 @@ import {TransformDataTypePipe} from './table/transform-data-type.pipe';
 import {CheckboxModule} from "primeng/checkbox";
 import {FormsModule} from "@angular/forms";
 import {InputTextModule} from "primeng/inputtext";
+import {ListboxModule} from "primeng/listbox";
+import { SortByOrderIndexPipe } from './table/sort-by-order-index.pipe';
+import {FieldsetModule} from "primeng/fieldset";
+import { HeaderLabelPipe } from './table/header-label.pipe';
 
 @NgModule({
     declarations: [
         AppComponent,
         TableComponent,
-        TransformDataTypePipe
+        TransformDataTypePipe,
+        SortByOrderIndexPipe,
+        HeaderLabelPipe
     ],
     imports: [
         BrowserModule,
@@ -26,7 +32,9 @@ import {InputTextModule} from "primeng/inputtext";
         TableModule,
         CheckboxModule,
         FormsModule,
-        InputTextModule
+        InputTextModule,
+        ListboxModule,
+        FieldsetModule
     ],
     providers: [],
     bootstrap: [AppComponent]

@@ -1,6 +1,8 @@
 import {Component} from '@angular/core';
 import {FileReaderService} from '../file-reader.service';
 import {Table} from "primeng/table";
+import {TableHeader} from "./table-header";
+import {HeaderType} from "./header-type";
 
 @Component({
     selector: 'app-table',
@@ -9,7 +11,7 @@ import {Table} from "primeng/table";
 })
 export class TableComponent {
 
-    HEADER_TYPES: { [key: string]: { filterType: string, valueType: string } } = {
+    HEADER_TYPES: HeaderType = {
         'Name': {filterType: 'text', valueType: 'text'},
         'Rec': {filterType: 'text', valueType: 'text'},
         'Inf': {filterType: 'text', valueType: 'text'},
@@ -199,7 +201,7 @@ export class TableComponent {
         'Acc': {filterType: 'numeric', valueType: 'decimal'},
     } as const;
 
-    headers: { label: string, filterType: string, valueType: string }[] = [];
+    headers: TableHeader[] = [];
     filterFields: string[] = [];
     body: (string | number)[][] = [[]];
 
@@ -210,6 +212,7 @@ export class TableComponent {
     ];
 
     enableResizableColumns: boolean = false;
+    selectedHeaders: TableHeader[] = [];
 
 
     constructor(
@@ -223,13 +226,17 @@ export class TableComponent {
             this.fileReaderService.readFile(inputElement.files[0])
                 .then(fileContent => {
                     this.filterFields = fileContent.header;
-                    this.headers = fileContent.header.map(value => {
+                    this.headers = fileContent.header.map((value, index, _array) => {
                         return {
                             label: value,
                             filterType: this.getHeaderType(value)?.filterType,
                             valueType: this.getHeaderType(value)?.valueType,
+                            orderIndex: index
                         }
                     });
+
+                    this.selectedHeaders = this.headers;
+
                     this.body = fileContent.body.map(line => line.map((columnValue, columnIndex, _columns) => {
                         const header = this.headers[columnIndex];
 
@@ -261,10 +268,10 @@ export class TableComponent {
 
         // iterate over each column
         let str = '';
-        this.headers.forEach((column, columnIndex, columns) => {
+        this.headers.forEach((column, columnIndex, _columns) => {
             const dataTypeMap = new Map();
             // iterate over each row
-            this.body.forEach((row, rowIndex, rows) => {
+            this.body.forEach((row, _rowIndex, _rows) => {
                 const cell = row[columnIndex];
                 const dataTypeIndex = this.getDataType('' + cell);
 

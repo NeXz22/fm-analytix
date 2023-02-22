@@ -1,11 +1,22 @@
-<form>
+<div>
     <p-checkbox name="enableResizableColumns" [value]="false" label="enable resizable columns"
                 [(ngModel)]="enableResizableColumns"></p-checkbox>
-</form>
+
+    <p-fieldset legend="Show/Hide Columns" [toggleable]="true">
+        <p-listbox [options]="headers" [(ngModel)]="selectedHeaders" [checkbox]="true" [multiple]="true" [filter]="true"
+                   optionLabel="label">
+            <ng-template let-header pTemplate="item">
+                <div class="header-item">
+                    <div>{{header.label}} ({{header.valueType}})</div>
+                </div>
+            </ng-template>
+        </p-listbox>
+    </p-fieldset>
+</div>
 
 <input type="file" (change)="onFileChanged($event)"/>
 
-<p-table #table [value]="body" [globalFilterFields]="filterFields" [virtualScroll]="true"
+<p-table #table [value]="body" [virtualScroll]="true"
          [virtualScrollItemSize]="46" scrollHeight="800px" [resizableColumns]="enableResizableColumns"
          columnResizeMode="expand"
          [tableStyle]="{'min-width': '100%'}" styleClass="p-datatable-sm p-datatable-striped">
@@ -17,8 +28,9 @@
     </ng-template>
     <ng-template pTemplate="header">
         <tr>
-            <th pResizableColumn pSortableColumn="{{i}}"
-                *ngFor="let header of headers; let i = index">{{ header.label }} ({{(header.valueType)}})
+            <th *ngFor="let header of selectedHeaders | sortByOrderIndex; let i = index" pResizableColumn
+                pSortableColumn="{{header.orderIndex}}">
+                {{ header.label }}
                 <p-sortIcon field="{{i}}"></p-sortIcon>
                 <p-columnFilter type="{{header.filterType || 'text'}}" field="{{i}}" display="menu"></p-columnFilter>
             </th>
@@ -26,7 +38,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-rowData>
         <tr>
-            <td *ngFor="let header of headers; let i = index">{{ rowData[i] | transformDataType: header.valueType }}</td>
+            <td *ngFor="let header of selectedHeaders | sortByOrderIndex">{{ rowData[header.orderIndex] | transformDataType: header.valueType }}</td>
         </tr>
     </ng-template>
 </p-table>
