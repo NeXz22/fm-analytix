@@ -8,6 +8,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TableComponent} from './table/table.component';
 import {TableModule} from 'primeng/table';
 import {TransformDataTypePipe} from './table/transform-data-type.pipe';
+import {CheckboxModule} from "primeng/checkbox";
+import {FormsModule} from "@angular/forms";
+import {InputTextModule} from "primeng/inputtext";
 
 @NgModule({
     declarations: [
@@ -20,7 +23,10 @@ import {TransformDataTypePipe} from './table/transform-data-type.pipe';
         BrowserAnimationsModule,
         AppRoutingModule,
         ButtonModule,
-        TableModule
+        TableModule,
+        CheckboxModule,
+        FormsModule,
+        InputTextModule
     ],
     providers: [],
     bootstrap: [AppComponent]

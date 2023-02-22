@@ -1,7 +1,20 @@
+<form>
+    <p-checkbox name="enableResizableColumns" [value]="false" label="enable resizable columns"
+                [(ngModel)]="enableResizableColumns"></p-checkbox>
+</form>
+
 <input type="file" (change)="onFileChanged($event)"/>
-<p-table [value]="body" [globalFilterFields]="filterFields" [virtualScroll]="true"
-         [virtualScrollItemSize]="46" scrollHeight="800px" [resizableColumns]="true" columnResizeMode="expand"
+
+<p-table #table [value]="body" [globalFilterFields]="filterFields" [virtualScroll]="true"
+         [virtualScrollItemSize]="46" scrollHeight="800px" [resizableColumns]="enableResizableColumns"
+         columnResizeMode="expand"
          [tableStyle]="{'min-width': '100%'}" styleClass="p-datatable-sm p-datatable-striped">
+    <ng-template pTemplate="caption">
+        <div class="flex">
+            <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                    (click)="clear(table)"></button>
+        </div>
+    </ng-template>
     <ng-template pTemplate="header">
         <tr>
             <th pResizableColumn pSortableColumn="{{i}}"
